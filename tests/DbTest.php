@@ -16,7 +16,7 @@ class DbTest extends TestCase
         $parameters = [
             'name' => 'http://google.com'
         ];
-        $this->post("domain", $parameters, []);
+        $this->post("domains", $parameters, []);
         $this->seeInDatabase("domains", ['name' => 'http://google.com']);
     }
 }

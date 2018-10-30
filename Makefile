@@ -2,10 +2,10 @@ install:
 	composer install
 
 lint:
-	composer run-script phpcs -- --standard=PSR12 public routes tests
+	composer run-script phpcs -- --standard=PSR12 public routes tests app
 
 lint-fix:
-	composer run-script phpcbf -- --standard=PSR12 public routes tests
+	composer run-script phpcbf -- --standard=PSR12 public routes tests app
 
 test:
 	vendor/bin/phpunit

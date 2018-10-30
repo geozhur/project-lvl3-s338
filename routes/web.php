@@ -11,12 +11,23 @@
 |
 */
 
-$router->get('/', function () use ($router) {
-    return view('index');
-});
 
-$router->get('/about', function () use ($router) {
-    return view('about');
-});
-$router->post('/domain', 'DomainController@insertDomain');
-$router->get('/domain/{id}', 'DomainController@getDomain');
+$router->get('/', [
+    'as' => 'index',  function () use ($router) {
+        return view('index');
+    }
+]);
+
+$router->get('/about', [
+    'as' => 'about',  function () use ($router) {
+        return view('about');
+    }
+]);
+
+$router->get('/domains/{id}', [
+    'as' => 'domains.show', 'uses' => 'DomainsController@show'
+]);
+
+$router->post('/domains', [
+    'as' => 'domains.store', 'uses' => 'DomainsController@store'
+]);

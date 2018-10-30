@@ -1,11 +1,11 @@
 <?php
 namespace App\Http\Controllers;
-use App\Domain;
+use App\Domains;
 use Illuminate\Validation;
 use Validator;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Http\Request;
-class DomainController extends Controller
+class DomainsController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -17,39 +17,33 @@ class DomainController extends Controller
         //
     }
 
-    public function getDomain($id)
+    public function show($id)
     {
-        $domain = Domain::find($id);
-        if(!$domain) {
-            return redirect('/');
+        $domain = Domains::find($id);
+        if (!$domain) {
+            return redirect()->route('index');
         }
-        return view('domain', ['domain' => $domain]);
+        return view('domains', ['domain' => $domain]);
     }
 
 
-    public function insertDomain( Request $request )
+    public function store(Request $request)
     {
         $rules = [
             'name' => 'required|regex:/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/'
         ];
 
-        $validator = Validator::make($request->post(), $rules);
-
-
         try {
             $this->validate($request, $rules);
-        }
-        catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (\Illuminate\Validation\ValidationException $e) {
             $errors = $e->getMessage();
-            return redirect("/");
+            return redirect()->route('index');
         }
 
-        $domain = new Domain;
+        $domain = new Domains();
         $domain->name = $request->name;
         $domain->save();
 
-        return redirect("/domain/{$domain->id}");
+        return redirect()->route('domains.show', ['id' => $domain->id]);
     }
-
-    //
 }
