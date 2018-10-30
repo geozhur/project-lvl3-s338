@@ -1,13 +1,26 @@
 <?php
-$dbopts = parse_url(env('DATABASE_URL'));
+
+$host = env('DB_HOST', '127.0.0.1');
+$database = env('DB_DATABASE', '');
+$port = env('DB_PORT', '');
+$username = env('DB_USERNAME', 'tututu');
+$password = env('DB_PASSWORD', 'tututu');
+
+
+if($databaseUrl = getenv('DATABASE_URL')) {
+    $url = parse_url($databaseUrl);
+    $host = $url['host'];
+    $port = $url['port'];
+    $username = $url['user'];
+    $password = $url['pass'];
+    $database = ltrim($dbopts["path"],'/');
+}
 
 return [
 
-   
-
     'fetch' => PDO::FETCH_CLASS,
     'default' =>env('DB_CONNECTION', 'sqlite'),
- 
+    'migrations' => 'migrations',
     'connections' => [
 
         'sqlite' => [
@@ -18,11 +31,11 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
-            'host' => $dbopts['host'],
-            'port' => $dbopts['port'],
-            'database' => ltrim($dbopts["path"],'/'),
-            'username' => $dbopts['user'],
-            'password' => $dbopts['pass'],
+            'host' => $host,
+            'port' => $port,
+            'database' => $database,
+            'username' => $username,
+            'password' => $password,
             'charset' => 'utf8',
             'prefix' => '',
             'schema' => 'public',

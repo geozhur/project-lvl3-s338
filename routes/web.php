@@ -12,5 +12,11 @@
 */
 
 $router->get('/', function () use ($router) {
-    return view('main');
+    return view('index');
 });
+
+$router->get('/about', function () use ($router) {
+    return view('about');
+});
+$router->post('/domain', 'DomainController@insertDomain');
+$router->get('/domain/{id}', 'DomainController@getDomain');
