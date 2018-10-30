@@ -13,7 +13,7 @@ if($databaseUrl = getenv('DATABASE_URL')) {
     $port = $url['port'];
     $username = $url['user'];
     $password = $url['pass'];
-    $database = ltrim($dbopts["path"],'/');
+    $database = ltrim($url["path"],'/');
 }
 
 return [
