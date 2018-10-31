@@ -71,18 +71,28 @@ class DomainsController extends Controller
             ]
         );
 
-        $promise = $client->getAsync($request->name, $requestOption, array('allow_redirects' => true));
-        $response = $promise->wait();
+        try {
+            $promise = $client->getAsync($request->name, $requestOption, array('allow_redirects' => true));
+            $response = $promise->wait();
+    
+            $domain->name = $request->name;
+            $domain->status_code = $response->getStatusCode();
+            $body = $response->getBody();
+            $domain->body = $body ? $body : "";
+            $contentLength = $response->getHeader('Content-Length');
+            $domain->content_length = $contentLength ? $contentLength[0] : strlen($domain->body);
+            $domain->body = utf8_encode($domain->body);
+        } catch (RequestException $e) {
+            $errors = $e->getMessage();
+            $request->session()->flash('error', $errors);
+            return redirect()->route('index');
+        } catch (\Exception $e) {
+            $errors = $e->getMessage();
+            $request->session()->flash('error', $errors);
+            return redirect()->route('index');
+        }
 
-        $domain->name = $request->name;
-        $domain->status_code = $response->getStatusCode();
-        $body = $response->getBody();
-        $domain->body = $body ? $body : "";
-        $contentLength = $response->getHeader('Content-Length');
-        $domain->content_length = $contentLength ? $contentLength[0] : strlen($domain->body);
-        $domain->body = utf8_encode($domain->body);
         $domain->save();
-
         return redirect()->route('domains.show', ['id' => $domain->id]);
     }
 }
