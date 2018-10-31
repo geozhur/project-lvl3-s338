@@ -83,9 +83,12 @@ class DomainsController extends Controller
             $domain->content_length = $contentLength ? $contentLength[0] : strlen($domain->body);
             $domain->body = utf8_encode($domain->body);
         } catch (RequestException $e) {
-            $errors = $e->getMessage();
-            $request->session()->flash('error', $errors);
-            return redirect()->route('index');
+            if ($response = $e->getResponse()) {
+                $domain->name = $request->name;
+                $domain->status_code = $response->getStatusCode();
+                $domain->body = utf8_encode($response->getBody());
+                $domain->content_length = strlen($domain->body);
+            }
         } catch (\Exception $e) {
             $errors = $e->getMessage();
             $request->session()->flash('error', $errors);
