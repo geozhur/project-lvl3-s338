@@ -19,4 +19,13 @@ class DbTest extends TestCase
         $this->post("domains", $parameters, []);
         $this->seeInDatabase("domains", ['name' => 'http://google.com']);
     }
+
+    public function testDomainAdd()
+    {
+        $domain = factory('App\Domain')->create();
+        $this->get('/domains/1')
+            ->assertResponseStatus(200);
+        $this->get('/domains/2')
+            ->assertResponseStatus(404);
+    }
 }

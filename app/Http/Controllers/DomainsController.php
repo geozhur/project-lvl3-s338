@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Http\Request;
 use Session;
+use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\RequestException;
+
 class DomainsController extends Controller
 {
     /**
@@ -55,8 +59,27 @@ class DomainsController extends Controller
             return redirect()->route('index');
         }
 
+        $client = new Client();
         $domain = new Domain();
+
+        $requestOption = array(
+            'timeout' => 2.0, // Response timeout
+            'connect_timeout' => 2.0, // Connection timeout
+            'headers' => [
+                'User-Agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) 
+                AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36',
+            ]
+        );
+
+        $promise = $client->getAsync($request->name, $requestOption, array('allow_redirects' => true));
+        $response = $promise->wait();
+
         $domain->name = $request->name;
+        $domain->status_code = $response->getStatusCode();
+        $body = $response->getBody();
+        $domain->body = $body ? $body : "";
+        $contentLength = $response->getHeader('Content-Length');
+        $domain->content_length = $contentLength ? $contentLength[0] : strlen($domain->body);
         $domain->save();
 
         return redirect()->route('domains.show', ['id' => $domain->id]);
