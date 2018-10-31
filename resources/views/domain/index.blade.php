@@ -1,18 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
-<div class="row justify-content-center">
-    <div class="col-6">
-        <form action="/domains" method="post">
-        <div class="input-group">
-            <input name="name" type="text" class="form-control" placeholder="Test site" aria-label="Test term" aria-describedby="basic-addon">
-            <div class="input-group-append">
-                <button class="btn btn-secondary" type="submit">Test</button>
-            </div>
-        </div>
-        </form>
-    </div>
-</div>
+@include('layouts.form')
 <div class="row justify-content-center mt-3">
     <div class="col-6">
          <h2>Page speed optimization</h2>
@@ -26,13 +15,16 @@
         </tr>
         </thead>
         <tbody>
+        @foreach ($domains as $domain)
         <tr>
             <td>{{ $domain->id }}</td>
             <td>{{ $domain->name }}</td>
             <td>{{ $domain->created_at }}</td>
-        </tr>      
+        </tr>   
+        @endforeach   
         </tbody>
         </table>
+        {{ $domains->links() }}
     </div>
 </div>
 @endsection

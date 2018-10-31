@@ -31,3 +31,7 @@ $router->get('/domains/{id}', [
 $router->post('/domains', [
     'as' => 'domains.store', 'uses' => 'DomainsController@store'
 ]);
+
+$router->get('/domains', [
+    'as' => 'domains.store', 'uses' => 'DomainsController@index'
+]);
