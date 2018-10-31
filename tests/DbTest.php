@@ -5,6 +5,13 @@ namespace Tests;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\TestResponse;
+
+use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\Request;
+//use GuzzleHttp\Tests\Server;
 use Tests\TestCase;
 
 class DbTest extends TestCase
@@ -27,5 +34,12 @@ class DbTest extends TestCase
             ->assertResponseStatus(200);
         $this->get('/domains/2')
             ->assertResponseStatus(404);
+    }
+
+    public function testDomainPagination()
+    {
+        factory('App\Domain', 50)->create();
+        $thisPage = (new \App\Domain())->paginate();
+        $this->assertEquals(15, $thisPage->count());
     }
 }
