@@ -25,7 +25,7 @@ class DomainsController extends Controller
 
     public function index()
     {
-        $domains = DB::table('domains')->paginate(20);
+        $domains = DB::table('domains')->orderBy('id', 'desc')->paginate(20);
 
         return view('domain.index', ['domains' => $domains]);
     }
