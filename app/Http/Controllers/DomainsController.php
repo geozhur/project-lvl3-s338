@@ -80,6 +80,7 @@ class DomainsController extends Controller
         $domain->body = $body ? $body : "";
         $contentLength = $response->getHeader('Content-Length');
         $domain->content_length = $contentLength ? $contentLength[0] : strlen($domain->body);
+        $domain->body = utf8_encode($domain->body);
         $domain->save();
 
         return redirect()->route('domains.show', ['id' => $domain->id]);
