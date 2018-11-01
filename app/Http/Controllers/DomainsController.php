@@ -101,40 +101,41 @@ class DomainsController extends Controller
             $domain->description = "";
 
             if ($original_body) {
-            $document = new Document((string)$domain->body);
-            $h1s = $document->find('h1');
-            foreach ($h1s as $h1) {
-                $domain->h1 .= $h1->text() . "\n";
-            }
+                $document = new Document((string)$domain->body);
+                $h1s = $document->find('h1');
+                foreach ($h1s as $h1) {
+                    $domain->h1 .= $h1->text() . "\n";
+                }
 
-            $keywords = $document->find('meta[name="keywords"]'); // <meta name="keywords" content="...">
-            foreach ($keywords as $keyword) {
-                $domain->keywords .= $keyword->getAttribute('content') . "\n";
-            }
+                $keywords = $document->find('meta[name="keywords"]'); // <meta name="keywords" content="...">
+                foreach ($keywords as $keyword) {
+                    $domain->keywords .= $keyword->getAttribute('content') . "\n";
+                }
 
-            $descriptions = $document->find('meta[name="description"]'); // <meta name="description" content="...">
-            foreach ($descriptions as $description) {
-                $domain->description .= $description->getAttribute('content') . "\n";
+                $descriptions = $document->find('meta[name="description"]'); // <meta name="description" content="...">
+                foreach ($descriptions as $description) {
+                    $domain->description .= $description->getAttribute('content') . "\n";
+                }
             }
-        }
             $contentLength = $response->getHeader('Content-Length');
             $domain->content_length = $contentLength ? $contentLength[0] : strlen($domain->body);
         } catch (RequestException $e) {
             if ($response = $e->getResponse()) {
                 $domain->name = $request->name;
                 $domain->status_code = $response->getStatusCode();
-                $domain->body = utf8_encode($response->getBody());
+                $domain->body = (string)$response->getBody();
                 $domain->content_length = strlen($domain->body);
                 $domain->h1 = "";
                 $domain->keywords = "";
                 $domain->description = "";
+            } else {
+                $domain->name = $request->name;
             }
         } catch (\Exception $e) {
             $errors = $e->getMessage();
             $request->session()->flash('error', $errors);
             return redirect()->route('index');
         }
-
         $domain->save();
         return redirect()->route('domains.show', ['id' => $domain->id]);
     }
