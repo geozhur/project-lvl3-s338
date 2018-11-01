@@ -29,6 +29,13 @@ class DbTest extends TestCase
         $this->seeInDatabase("domains", ['name' => 'http://google.com']);
     }
 
+    public function testDomain404()
+    {
+        $this->get('/domains/1')
+            ->assertResponseStatus(404);
+    }
+
+
     public function testDomainAdd()
     {
         $parameters = [
@@ -37,14 +44,26 @@ class DbTest extends TestCase
 
         $this->post("domains", $parameters, []);
 
-        $this->get('/domains/1')
-            ->assertResponseStatus(200);
+        $this->get('/domains/1');
 
         $this->assertRegExp(
-                '/http\:\/\/google\.com/',
-                $this->response->getContent()
+            '/http\:\/\/google\.com/',
+            $this->response->getContent()
         );
+    }
 
+    public function testDomainAddFail()
+    {
+        $parameters = [
+            'name' => 'test'
+        ];
+
+        $this->post("domains", $parameters, []);
+        $this->get('/');
+        $this->assertNotRegExp(
+            '/test/',
+            $this->response->getContent()
+        );
     }
 
     public function testDomainPagination()
@@ -53,5 +72,4 @@ class DbTest extends TestCase
         $thisPage = (new \App\Domain())->paginate();
         $this->assertEquals(15, $thisPage->count());
     }
-    
 }
