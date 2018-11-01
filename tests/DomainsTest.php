@@ -16,7 +16,7 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Request;
 use Tests\TestCase;
 
-class DbTest extends TestCase
+class Domains extends TestCase
 {
     use DatabaseMigrations;
 
