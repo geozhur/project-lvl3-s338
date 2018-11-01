@@ -3,15 +3,17 @@
 namespace Tests;
 
 use Laravel\Lumen\Testing\DatabaseMigrations;
-use Laravel\Lumen\Testing\DatabaseTransactions;
+//use Laravel\Lumen\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\TestResponse;
+use Mockery;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Request;
-//use GuzzleHttp\Tests\Server;
 use Tests\TestCase;
 
 class DbTest extends TestCase
@@ -29,11 +31,20 @@ class DbTest extends TestCase
 
     public function testDomainAdd()
     {
-        $domain = factory('App\Domain')->create();
+        $parameters = [
+            'name' => 'http://google.com'
+        ];
+
+        $this->post("domains", $parameters, []);
+
         $this->get('/domains/1')
             ->assertResponseStatus(200);
-        $this->get('/domains/2')
-            ->assertResponseStatus(404);
+
+        $this->assertRegExp(
+                '/http\:\/\/google\.com/',
+                $this->response->getContent()
+        );
+
     }
 
     public function testDomainPagination()
@@ -42,4 +53,5 @@ class DbTest extends TestCase
         $thisPage = (new \App\Domain())->paginate();
         $this->assertEquals(15, $thisPage->count());
     }
+    
 }

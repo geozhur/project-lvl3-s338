@@ -18,9 +18,10 @@ class DomainsController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        //
+    protected $client;
+
+    public function __construct(Client $client = null) {
+        $this->client = $client ?: new Client;
     }
 
     public function index()
@@ -59,7 +60,7 @@ class DomainsController extends Controller
             return redirect()->route('index');
         }
 
-        $client = new Client();
+        $client = $this->client;
         $domain = new Domain();
 
         $requestOption = array(
