@@ -12,6 +12,9 @@ class Domain extends Model
         'name',
         'body',
         'content_length',
+        'h1',
+        'keywords',
+        'description',
         'status_code',
     ];
 }

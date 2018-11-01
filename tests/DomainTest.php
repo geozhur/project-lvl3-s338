@@ -16,7 +16,7 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Request;
 use Tests\TestCase;
 
-class Domains extends TestCase
+class Domain extends TestCase
 {
     use DatabaseMigrations;
 
@@ -45,11 +45,13 @@ class Domains extends TestCase
         $this->post("domains", $parameters, []);
 
         $this->get('/domains/1');
-
+/*
         $this->assertRegExp(
             '/http\:\/\/google\.com/',
             $this->response->getContent()
         );
+        */
+        $this->seeInDatabase("domains", ['name' => 'http://google.com']);
     }
 
     public function testDomainAddFail()
@@ -60,8 +62,8 @@ class Domains extends TestCase
 
         $this->post("domains", $parameters, []);
         $this->get('/');
-        $this->assertNotRegExp(
-            '/test/',
+        $this->assertRegExp(
+            '/The given data was invalid/',
             $this->response->getContent()
         );
     }

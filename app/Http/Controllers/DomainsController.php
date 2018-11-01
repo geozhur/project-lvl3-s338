@@ -10,6 +10,8 @@ use Session;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
+use DiDom\Document;
+use DiDom\Query;
 
 class DomainsController extends Controller
 {
@@ -20,9 +22,9 @@ class DomainsController extends Controller
      */
     protected $client;
 
-    public function __construct(Client $client = null)
+    public function __construct(Client $client)
     {
-        $this->client = $client ?: new Client();
+        $this->client = $client;
     }
 
     public function index()
@@ -81,9 +83,29 @@ class DomainsController extends Controller
             $domain->status_code = $response->getStatusCode();
             $body = $response->getBody();
             $domain->body = $body ? $body : "";
+           // $domain->body = utf8_encode($domain->body);
+            $domain->h1 = "";
+            $document = new Document((string)$domain->body);
+            $h1s = $document->find('h1');
+            foreach ($h1s as $h1) {
+                $domain->h1 .= $h1->text() . "\n";
+            }
+
+            $domain->keywords = "";
+            $keywords = $document->find('meta[name="keywords"]'); // <meta name="keywords" content="...">
+            foreach ($keywords as $keyword) {
+                $domain->keywords .= $keyword->getAttribute('content') . "\n";
+            }
+
+            $domain->description = "";
+            $descriptions = $document->find('meta[name="description"]'); // <meta name="description" content="...">
+            foreach ($descriptions as $description) {
+                $domain->description .= $description->getAttribute('content') . "\n";
+            }
+
             $contentLength = $response->getHeader('Content-Length');
             $domain->content_length = $contentLength ? $contentLength[0] : strlen($domain->body);
-            $domain->body = utf8_encode($domain->body);
+          //  $domain->body = utf8_encode($domain->body);
         } catch (RequestException $e) {
             if ($response = $e->getResponse()) {
                 $domain->name = $request->name;
