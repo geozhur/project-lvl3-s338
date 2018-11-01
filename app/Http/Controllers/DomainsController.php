@@ -81,37 +81,53 @@ class DomainsController extends Controller
     
             $domain->name = $request->name;
             $domain->status_code = $response->getStatusCode();
-            $body = $response->getBody();
-            $domain->body = $body ? $body : "";
-           // $domain->body = utf8_encode($domain->body);
+            
+            $original_body = $response->getBody();
+            if ($original_body) {
+            // pgsql bug fix
+                $type = $response->getHeader('content-type');
+                if ($type) {
+                    $parsed = \GuzzleHttp\Psr7\parse_header($type);
+                    $domain->body = mb_convert_encoding($original_body, 'UTF-8', $parsed[0]['charset'] ?: 'UTF-8');
+                } else {
+                    $domain->body = (string)$original_body;
+                }
+            } else {
+                $domain->body = "";
+            }
+
             $domain->h1 = "";
+            $domain->keywords = "";
+            $domain->description = "";
+
+            if ($original_body) {
             $document = new Document((string)$domain->body);
             $h1s = $document->find('h1');
             foreach ($h1s as $h1) {
                 $domain->h1 .= $h1->text() . "\n";
             }
 
-            $domain->keywords = "";
             $keywords = $document->find('meta[name="keywords"]'); // <meta name="keywords" content="...">
             foreach ($keywords as $keyword) {
                 $domain->keywords .= $keyword->getAttribute('content') . "\n";
             }
 
-            $domain->description = "";
             $descriptions = $document->find('meta[name="description"]'); // <meta name="description" content="...">
             foreach ($descriptions as $description) {
                 $domain->description .= $description->getAttribute('content') . "\n";
             }
-
+        }
             $contentLength = $response->getHeader('Content-Length');
             $domain->content_length = $contentLength ? $contentLength[0] : strlen($domain->body);
-          //  $domain->body = utf8_encode($domain->body);
         } catch (RequestException $e) {
             if ($response = $e->getResponse()) {
                 $domain->name = $request->name;
                 $domain->status_code = $response->getStatusCode();
                 $domain->body = utf8_encode($response->getBody());
                 $domain->content_length = strlen($domain->body);
+                $domain->h1 = "";
+                $domain->keywords = "";
+                $domain->description = "";
             }
         } catch (\Exception $e) {
             $errors = $e->getMessage();
