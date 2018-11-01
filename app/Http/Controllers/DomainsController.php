@@ -36,7 +36,10 @@ class DomainsController extends Controller
 
     public function show($id)
     {
-        $domain = Domain::findOrFail($id);
+        try {
+            $domain = Domain::findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+        }
         return view('domain.show', ['domain' => $domain]);
     }
 
