@@ -12,10 +12,17 @@ class GuzzleServiceProvider extends ServiceProvider
      *
      * @return void
      */
+    protected $defer = true;
+    
     public function register()
     {
-        $this->app->bind('Client', function () {
+        $this->app->bind('GuzzleHttp\Client', function () {
             return new Client();
         });
+    }
+
+    public function provides()
+    {
+        return ['GuzzleHttp\Client'];
     }
 }

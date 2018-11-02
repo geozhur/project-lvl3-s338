@@ -17,5 +17,8 @@ $factory->define(App\Domain::class, function (Faker\Generator $faker) {
         'status_code' => $faker->randomElement(array(200, 500, 403, 401)),
         'content_length' => $faker->numberBetween(10,20000),
         'body' => $faker->text(500),
+        'h1' => $faker->text(20),
+        'keywords' => $faker->text(100),
+        'description' => $faker->text(100),
     ];
 });
