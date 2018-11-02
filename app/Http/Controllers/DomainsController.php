@@ -103,21 +103,19 @@ class DomainsController extends Controller
             $domain->keywords = "";
             $domain->description = "";
             if ($original_body) {
-
                 $document = new Document((string)$domain->body);
 
-                $domain->h1 = implode("\n",array_map(function($val) {
+                $domain->h1 = implode("\n", array_map(function ($val) {
                     return $val->text();
                 }, $document->find('h1')));
 
-                $domain->keywords = implode("\n",array_map(function($val) {
+                $domain->keywords = implode("\n", array_map(function ($val) {
                     return $val->getAttribute('content');
                 }, $document->find('meta[name="keywords"]')));
 
-                $domain->description = implode("\n",array_map(function($val) {
+                $domain->description = implode("\n", array_map(function ($val) {
                     return $val->getAttribute('content');
                 }, $document->find('meta[name="description"]')));
-
             }
             $contentLength = $response->getHeader('Content-Length');
             $domain->content_length = $contentLength ? $contentLength[0] : strlen($domain->body);

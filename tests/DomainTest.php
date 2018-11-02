@@ -46,7 +46,7 @@ class Domain extends TestCase
 
         $this->post("domains", $parameters, []);
 
-      $this->get('/domains/1');
+        $this->get('/domains/1');
 
         $this->assertRegExp(
             '/http\:\/\/google\.com/',
@@ -91,7 +91,7 @@ class Domain extends TestCase
 
         $handler = HandlerStack::create($mock);
         $client = new Client(['handler' => $handler]);
-        $this->app->instance(Client::class, $client); 
+        $this->app->instance(Client::class, $client);
 
         $parameters = [
             'name' => 'http://google.com/xxx'
@@ -125,7 +125,7 @@ class Domain extends TestCase
 
         $handler = HandlerStack::create($mock);
         $client = new Client(['handler' => $handler]);
-        $this->app->instance(Client::class, $client); 
+        $this->app->instance(Client::class, $client);
 
         $parameters = [
             'name' => 'http://google.com/xxx'
