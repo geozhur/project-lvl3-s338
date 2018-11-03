@@ -1,20 +1,14 @@
-html {
-font-size: 14px;
-}
-@media (min-width: 768px) {
-html {
-    font-size: 16px;
-}
-}
-
-.container {
-width: 700px;
-}
-
-.card-deck .card {
-min-width: 220px;
-}
-
-.form-control-borderless {
-    border: none;
-}
+.ajax-loader {
+    visibility: hidden;
+    background-color: rgba(255,255,255,0.7);
+    position: absolute;
+    z-index: +100 !important;
+    width: 100%;
+    height:100%;
+  }
+  
+  .ajax-loader img {
+    position: relative;
+    top:50%;
+    left:50%;
+  }

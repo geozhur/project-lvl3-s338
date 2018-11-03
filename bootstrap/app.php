@@ -68,7 +68,8 @@ $app->routeMiddleware([
 ]);
 */
 $app->middleware([
-    \Illuminate\Session\Middleware\StartSession::class
+    \Illuminate\Session\Middleware\StartSession::class,
+ //   \Laravel\Lumen\Http\Middleware\VerifyCsrfToken::class,
 ]);
 
 $app->bind(\Illuminate\Session\SessionManager::class, function () use ($app) {
