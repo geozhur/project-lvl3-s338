@@ -25,7 +25,7 @@ class DomainJob extends Job
     protected $request;
     protected $id;
 
-    public function __construct(Array $request, $id)
+    public function __construct(array $request, $id)
     {
         $this->request = $request;
         $this->id = $id;
@@ -33,19 +33,19 @@ class DomainJob extends Job
 
     public function handle(Domain $domain, Client $client)
     {
-       $domain = Domain::find($this->id);
+        $domain = Domain::find($this->id);
       // $domain->name = $this->request['name'];
 
-       $requestOption = array(
+        $requestOption = array(
             'timeout' => 2.0, // Response timeout
             'connect_timeout' => 2.0, // Connection timeout
             'headers' => [
                 'User-Agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) 
                 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36',
             ]
-       );
+        );
 
-       try {
+        try {
             $promise = $client->getAsync($domain->name, $requestOption, array('allow_redirects' => true));
             $response = $promise->wait();
 
@@ -53,7 +53,6 @@ class DomainJob extends Job
             $original_body = $response->getBody();
 
             if ($original_body) {
-
                 $type = $response->getHeader('content-type');
                 if ($type) {
                     $parsed = \GuzzleHttp\Psr7\parse_header($type);
@@ -85,15 +84,14 @@ class DomainJob extends Job
                 $domain->content_length = strlen($domain->body);
 //                $request->session()->flash('error', 'ddd');
 //                return redirect()->route('index');
-            } 
+            }
         } catch (\Exception $e) {
             $errors = $e->getMessage();
             $domain->status_code = "Error";
-//            $request->session()->flash('error', $errors);
-//            return redirect()->route('index');
+ //            $request->session()->flash('error', $errors);
+ //            return redirect()->route('index');
         }
 
-       $domain->save();
+        $domain->save();
     }
-
 }

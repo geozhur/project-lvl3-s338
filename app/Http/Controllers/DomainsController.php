@@ -70,14 +70,14 @@ class DomainsController extends Controller
         $domain = new Domain();
         $domain->name = $request['name'];
         $domain->body = "loading...";
-        $domain->content_length= "loading...";
+        $domain->content_length = "loading...";
         $domain->h1 = "loading...";
         $domain->keywords = "loading...";
         $domain->description = "loading...";
         $domain->status_code = "loading...";
         $domain->save();
-        dispatch(new DomainJob($request->all(),$domain->id));
+        dispatch(new DomainJob($request->all(), $domain->id));
 
-        return redirect()->route('domains.show',['id' => $domain->id]);
+        return redirect()->route('domains.show', ['id' => $domain->id]);
     }
 }
