@@ -1,2 +1,2 @@
 web: vendor/bin/heroku-php-apache2 public/
-worker: php artisan queue:work --timeout=1800
+sqs: php artisan queue:work --timeout=1800
