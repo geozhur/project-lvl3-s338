@@ -44,6 +44,15 @@ class DomainsController extends Controller
         return view('domain.show', ['domain' => $domain]);
     }
 
+    public function json($id)
+    {
+        try {
+            $domain = Domain::findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+        }
+
+        return response()->json($domain);
+    }
 
     public function store(Request $request)
     {

@@ -35,3 +35,7 @@ $router->post('/domains', [
 $router->get('/domains', [
     'as' => 'domains.store', 'uses' => 'DomainsController@index'
 ]);
+
+$router->get('/domains/json/{id}', [
+    'as' => 'domains.json', 'uses' => 'DomainsController@json'
+]);
