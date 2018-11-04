@@ -24,7 +24,7 @@ $router->get('/about', [
     }
 ]);
 
-$router->get('/domains/{id}', [
+$router->get('/domains/{id:[0-9]+}', [
     'as' => 'domains.show', 'uses' => 'DomainsController@show'
 ]);
 
@@ -36,6 +36,6 @@ $router->get('/domains', [
     'as' => 'domains.store', 'uses' => 'DomainsController@index'
 ]);
 
-$router->get('/domains/json/{id}', [
+$router->get('/domains/json/{id:[0-9]+}', [
     'as' => 'domains.json', 'uses' => 'DomainsController@json'
 ]);
